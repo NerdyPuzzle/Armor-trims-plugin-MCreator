@@ -1,0 +1,27 @@
+global_templates:
+  - template: armor_trim/smithing_templates.json.ftl
+    writer: json
+    name: "@RESROOT/data/minecraft/tags/items/trim_templates.json"
+  - template: armor_trim/armor_trims.json.ftl
+    writer: json
+    name: "@RESROOT/assets/minecraft/atlases/armor_trims.json"
+
+templates:
+  - template: armor_trim/trim_pattern.json.ftl
+    writer: json
+    name: "@MODDATAROOT/trim_pattern/@registryname.json"
+  - template: armor_trim/smithing_recipe.json.ftl
+    writer: json
+    name: "@MODDATAROOT/recipes/@registryname_trim_smithing_template_smithing_trim.json"
+  - template: armor_trim/materials_tag.json.ftl
+    writer: json
+    name: "@MODDATAROOT/tags/items/@registryname_materials.json"
+    condition: ${data.type == "Custom"}
+
+list_templates:
+  - name: "Custom materials"
+    listData: data.getCustomMaterials()
+    forEach:
+      - template: armor_trim/custom_material.json.ftl
+        writer: json
+        name: "@MODDATAROOT/trim_material/@registryname_material_@itemindex.json"
