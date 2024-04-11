@@ -167,34 +167,19 @@ public class ArmorTrimGUI extends ModElementGUI<ArmorTrim> {
     }
 
     protected void afterGeneratableElementStored() {
-        if (type.getSelectedItem().equals("Vanilla")) {
-            if (mcreator.getGenerator().getGeneratorConfiguration().getGeneratorFlavor() != GeneratorFlavor.FABRIC) {
-                FileIO.copyFile(new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/models/armor/" + armorTextureFile.getSelectedItem() + "_layer_1.png"),
-                        new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/trims/models/armor/" + modElement.getRegistryName() + ".png"));
-                FileIO.copyFile(new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/models/armor/" + armorTextureFile.getSelectedItem() + "_layer_2.png"),
-                        new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/trims/models/armor/" + modElement.getRegistryName() + "_leggings.png"));
-            }
-            else {
-                FileIO.copyFile(new File(GeneratorUtils.getResourceRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration()), "assets/minecraft/textures/models/armor/" + armorTextureFile.getSelectedItem() + "_layer_1.png"),
-                        new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/trims/models/armor/" + modElement.getRegistryName() + ".png"));
-                FileIO.copyFile(new File(GeneratorUtils.getResourceRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration()), "assets/minecraft/textures/models/armor/" + armorTextureFile.getSelectedItem() + "_layer_2.png"),
-                        new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/trims/models/armor/" + modElement.getRegistryName() + "_leggings.png"));
-            }
+        if (mcreator.getGenerator().getGeneratorConfiguration().getGeneratorFlavor() != GeneratorFlavor.FABRIC) {
+            FileIO.copyFile(new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/models/armor/" + armorTextureFile.getSelectedItem() + "_layer_1.png"),
+                    new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/trims/models/armor/" + modElement.getRegistryName() + ".png"));
+            FileIO.copyFile(new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/models/armor/" + armorTextureFile.getSelectedItem() + "_layer_2.png"),
+                    new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/trims/models/armor/" + modElement.getRegistryName() + "_leggings.png"));
         }
-        else if (type.getSelectedItem().equals("Custom")) {
-            for (MItemBlock material : materials.getListElements()) {
-                String name = "";
-                ModElement element = mcreator.getWorkspace().getModElementByName(GeneratorWrapper.getElementPlainName(material.getUnmappedValue()));
-                if (element != null)
-                    name = element.getRegistryName();
-                else
-                    name = material.getMappedValue(1);
-                FileIO.copyFile(new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/models/armor/" + armorTextureFile.getSelectedItem() + "_layer_1.png"),
-                        new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/trims/models/armor/" + modElement.getRegistryName() + "_" + name + ".png"));
-                FileIO.copyFile(new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/models/armor/" + armorTextureFile.getSelectedItem() + "_layer_2.png"),
-                        new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/trims/models/armor/" + modElement.getRegistryName() + "_leggings_" + name + ".png"));
-            }
-
+        else {
+            FileIO.copyFile(new File(GeneratorUtils.getResourceRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration()), "assets/minecraft/textures/models/armor/" + armorTextureFile.getSelectedItem() + "_layer_1.png"),
+                    new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/trims/models/armor/" + modElement.getRegistryName() + ".png"));
+            FileIO.copyFile(new File(GeneratorUtils.getResourceRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration()), "assets/minecraft/textures/models/armor/" + armorTextureFile.getSelectedItem() + "_layer_2.png"),
+                    new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/trims/models/armor/" + modElement.getRegistryName() + "_leggings.png"));
+        }
+        if (type.getSelectedItem().equals("Custom")) {
             BufferedImage palette = new BufferedImage(8, 1, 2);
             Graphics2D layerStackGraphics2D = palette.createGraphics();
             Color[] colors = generateGradient(paletteColor.getColor());
