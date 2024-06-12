@@ -2,7 +2,7 @@
 {
   "asset_id": "${modid}:${data.getModElement().getRegistryName()}",
   "description": {
-    "translate": "${name}"
+    "translate": "trim_pattern.${modid}.${data.getModElement().getRegistryName()}"
   },
   "template_item": ${mappedMCItemToRegistryName(data.item)}
 }

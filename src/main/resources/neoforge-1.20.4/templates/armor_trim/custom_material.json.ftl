@@ -1,10 +1,10 @@
 <#include "../transformer.ftl">
 {
-  "asset_name": ${mappedMCItemToName(data.material)},
+  "asset_name": "${data.getModElement().getRegistryName()}",
   "description": {
-    "color": "${data.color}",
-    "translate": ${mappedMCItemToName(data.material)}
+    "color": "${data.getHexColor()}",
+    "translate": "trim_material.${modid}.${data.getModElement().getRegistryName()}"
   },
-  "ingredient": ${mappedMCItemToRegistryName(data.material)},
+  "ingredient": ${mappedMCItemToRegistryName(data.item)},
   "item_model_index": 0.0
 }

@@ -1,21 +1,47 @@
 <#include "../transformer.ftl">
-<#assign hasCustomTrims = false>
-<#assign customTrims = []>
-<#list armortrims as trim>
-    <#if trim.type == "Custom">
-        <#assign hasCustomTrims = true>
-        <#assign customTrims += [trim]>
-    </#if>
-</#list>
 {
   "sources": [
     {
       "type": "paletted_permutations",
       "textures": [
-		<#list armortrims as trim>
+        "trims/models/armor/coast",
+        "trims/models/armor/coast_leggings",
+        "trims/models/armor/sentry",
+        "trims/models/armor/sentry_leggings",
+        "trims/models/armor/dune",
+        "trims/models/armor/dune_leggings",
+        "trims/models/armor/wild",
+        "trims/models/armor/wild_leggings",
+        "trims/models/armor/ward",
+        "trims/models/armor/ward_leggings",
+        "trims/models/armor/eye",
+        "trims/models/armor/eye_leggings",
+        "trims/models/armor/vex",
+        "trims/models/armor/vex_leggings",
+        "trims/models/armor/tide",
+        "trims/models/armor/tide_leggings",
+        "trims/models/armor/snout",
+        "trims/models/armor/snout_leggings",
+        "trims/models/armor/rib",
+        "trims/models/armor/rib_leggings",
+        "trims/models/armor/spire",
+        "trims/models/armor/spire_leggings",
+        "trims/models/armor/wayfinder",
+        "trims/models/armor/wayfinder_leggings",
+        "trims/models/armor/shaper",
+        "trims/models/armor/shaper_leggings",
+        "trims/models/armor/silence",
+        "trims/models/armor/silence_leggings",
+        "trims/models/armor/raiser",
+        "trims/models/armor/raiser_leggings",
+        "trims/models/armor/host",
+        "trims/models/armor/host_leggings"
+        <#if w.hasElementsOfType("armortrim")>,
+		  <#list w.getGElementsOfType("armortrim") as trim>
 		    "${modid}:trims/models/armor/${trim.getModElement().getRegistryName()}",
 		    "${modid}:trims/models/armor/${trim.getModElement().getRegistryName()}_leggings"<#sep>,
-		</#list>
+		  </#list>
+        </#if>
       ],
       "palette_key": "trims/color_palettes/trim_palette",
       "permutations": {
@@ -29,15 +55,14 @@
         "emerald": "trims/color_palettes/emerald",
         "lapis": "trims/color_palettes/lapis",
         "amethyst": "trims/color_palettes/amethyst",
-		"iron_darker": "trims/color_palettes/iron_darker",
+        "iron_darker": "trims/color_palettes/iron_darker",
         "gold_darker": "trims/color_palettes/gold_darker",
         "diamond_darker": "trims/color_palettes/diamond_darker",
-        "netherite_darker": "trims/color_palettes/netherite_darker"<#if hasCustomTrims>,
-        <#list customTrims as trim>
-            <#list trim.materials as mat>
-                ${mappedMCItemToName(mat)}: "trims/color_palettes/${trim.getModElement().getRegistryName()}"<#if trim?has_next || mat?has_next>,</#if>
-            </#list>
-        </#list>
+        "netherite_darker": "trims/color_palettes/netherite_darker"
+        <#if w.hasElementsOfType("trimmaterial")>,
+          <#list trimmaterials as material>
+            "${material.getModElement().getRegistryName()}": "trims/color_palettes/${material.getModElement().getRegistryName()}"<#sep>,
+          </#list>
         </#if>
       }
     }

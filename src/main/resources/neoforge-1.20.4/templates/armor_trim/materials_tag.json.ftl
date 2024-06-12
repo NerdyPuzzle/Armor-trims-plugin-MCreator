@@ -2,8 +2,8 @@
 {
   "replace": false,
   "values": [
-    <#list data.materials as material>
-        ${mappedMCItemToRegistryName(material)}<#sep>,
+    <#list trimmaterials as material>
+        ${mappedMCItemToRegistryName(material.item)}<#sep>,
     </#list>
   ]
 }

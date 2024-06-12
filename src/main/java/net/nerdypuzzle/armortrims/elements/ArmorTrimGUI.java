@@ -51,23 +51,20 @@ import java.util.stream.Collectors;
 
 public class ArmorTrimGUI extends ModElementGUI<ArmorTrim> {
     private final ValidationGroup page1group = new ValidationGroup();
+
+    private final VTextField name;
     private final MCItemHolder item;
     private final VComboBox<String> armorTextureFile;
     private final JLabel clo1;
     private final JLabel clo2;
-    private final JComboBox<String> type;
-    private final MCItemListField materials;
-    private final JColor paletteColor;
 
     public ArmorTrimGUI(MCreator mcreator, ModElement modElement, boolean editingMode) {
         super(mcreator, modElement, editingMode);
+        this.name = new VTextField(17);
         this.item = new MCItemHolder(this.mcreator, ElementUtil::loadBlocksAndItems);
         this.armorTextureFile = new SearchableComboBox();
         this.clo1 = new JLabel();
         this.clo2 = new JLabel();
-        this.type = new JComboBox<>(new String[]{"Vanilla", "Custom"});
-        this.materials = new MCItemListField(this.mcreator, ElementUtil::loadBlocksAndItems);
-        this.paletteColor = new JColor(this.mcreator, false, false);
         this.initGUI();
         super.finalizeGUI();
     }
@@ -75,16 +72,8 @@ public class ArmorTrimGUI extends ModElementGUI<ArmorTrim> {
     protected void initGUI() {
         JPanel pane1 = new JPanel(new BorderLayout());
         pane1.setOpaque(false);
-        JPanel mainPanel = new JPanel(new GridLayout(5, 2, 0, 2));
+        JPanel mainPanel = new JPanel(new GridLayout(3, 2, 0, 2));
         mainPanel.setOpaque(false);
-        paletteColor.setOpaque(false);
-
-        materials.setEnabled(type.getSelectedItem().equals("Custom"));
-        paletteColor.setEnabled(type.getSelectedItem().equals("Custom"));
-        this.type.addActionListener((e) -> {
-            materials.setEnabled(type.getSelectedItem().equals("Custom"));
-            paletteColor.setEnabled(type.getSelectedItem().equals("Custom"));
-        });
 
         this.armorTextureFile.setRenderer(new WTextureComboBoxRenderer((element) -> {
             File[] armorTextures = this.mcreator.getFolderManager().getArmorTextureFilesForName(element);
@@ -108,20 +97,24 @@ public class ArmorTrimGUI extends ModElementGUI<ArmorTrim> {
         JPanel merger = new JPanel(new BorderLayout(35, 35));
         merger.setOpaque(false);
 
+        mainPanel.add(HelpUtils.wrapWithHelpButton(this.withEntry("armortrim/trim_name"), L10N.label("elementgui.armortrim.name", new Object[0])));
+        mainPanel.add(name);
         mainPanel.add(HelpUtils.wrapWithHelpButton(this.withEntry("armortrim/smithing_template"), L10N.label("elementgui.armortrim.smithing_template", new Object[0])));
         mainPanel.add(item);
         mainPanel.add(HelpUtils.wrapWithHelpButton(this.withEntry("armortrim/armor_layer_texture"), L10N.label("elementgui.armortrim.layer_texture", new Object[0])));
         mainPanel.add(this.armorTextureFile);
-        mainPanel.add(HelpUtils.wrapWithHelpButton(this.withEntry("armortrim/trim_type"), L10N.label("elementgui.armortrim.type", new Object[0])));
-        mainPanel.add(this.type);
-        mainPanel.add(HelpUtils.wrapWithHelpButton(this.withEntry("armortrim/custom_materials"), L10N.label("elementgui.armortrim.custom_materials", new Object[0])));
-        mainPanel.add(this.materials);
-        mainPanel.add(HelpUtils.wrapWithHelpButton(this.withEntry("armortrim/custom_color"), L10N.label("elementgui.armortrim.custom_color", new Object[0])));
-        mainPanel.add(this.paletteColor);
 
         item.setValidator(new MCItemHolderValidator(item));
         page1group.addValidationElement(item);
         page1group.addValidationElement(armorTextureFile);
+
+        name.enableRealtimeValidation();
+        name.setValidator(new TextFieldValidator(this.name, "The trim must have a name"));
+        page1group.addValidationElement(name);
+
+        if (!this.isEditingMode()) {
+            name.setText(this.modElement.getName());
+        }
 
         merger.add("Center", mainPanel);
         merger.add("South", clop);
@@ -146,26 +139,6 @@ public class ArmorTrimGUI extends ModElementGUI<ArmorTrim> {
         ComboBoxUtil.updateComboBoxContents(this.armorTextureFile, ListUtils.merge(Collections.singleton(""), armorPart1s));
     }
 
-    public static Color[] generateGradient(Color baseColor) {
-        Color[] gradient = new Color[7];
-        int red = baseColor.getRed();
-        int green = baseColor.getGreen();
-        int blue = baseColor.getBlue();
-
-        // Generating lighter colors
-        gradient[0] = baseColor.brighter().brighter(); // Even lighter
-        gradient[1] = baseColor.brighter(); // Lighter
-        gradient[2] = baseColor;
-
-        // Generating darker colors
-        gradient[3] = new Color(Math.max(red - 30, 0), Math.max(green - 30, 0), Math.max(blue - 30, 0));
-        gradient[4] = new Color(Math.max(red - 60, 0), Math.max(green - 60, 0), Math.max(blue - 60, 0));
-        gradient[5] = new Color(Math.max(red - 90, 0), Math.max(green - 90, 0), Math.max(blue - 90, 0));
-        gradient[6] = new Color(Math.max(red - 120, 0), Math.max(green - 120, 0), Math.max(blue - 120, 0));
-
-        return gradient;
-    }
-
     protected void afterGeneratableElementStored() {
         if (mcreator.getGenerator().getGeneratorConfiguration().getGeneratorFlavor() != GeneratorFlavor.FABRIC) {
             FileIO.copyFile(new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/models/armor/" + armorTextureFile.getSelectedItem() + "_layer_1.png"),
@@ -178,35 +151,6 @@ public class ArmorTrimGUI extends ModElementGUI<ArmorTrim> {
                     new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/trims/models/armor/" + modElement.getRegistryName() + ".png"));
             FileIO.copyFile(new File(GeneratorUtils.getResourceRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration()), "assets/minecraft/textures/models/armor/" + armorTextureFile.getSelectedItem() + "_layer_2.png"),
                     new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/trims/models/armor/" + modElement.getRegistryName() + "_leggings.png"));
-        }
-        if (type.getSelectedItem().equals("Custom")) {
-            BufferedImage palette = new BufferedImage(8, 1, 2);
-            Graphics2D layerStackGraphics2D = palette.createGraphics();
-            Color[] colors = generateGradient(paletteColor.getColor());
-            layerStackGraphics2D.setColor(colors[0]);
-            layerStackGraphics2D.drawRect(0, 0, 1, 1);
-            layerStackGraphics2D.setColor(colors[1]);
-            layerStackGraphics2D.drawRect(1, 0, 1, 1);
-            layerStackGraphics2D.setColor(colors[2]);
-            layerStackGraphics2D.drawRect(2, 0, 1, 1);
-            layerStackGraphics2D.setColor(paletteColor.getColor());
-            layerStackGraphics2D.drawRect(3, 0, 1, 1);
-            layerStackGraphics2D.setColor(colors[3]);
-            layerStackGraphics2D.drawRect(4, 0, 1, 1);
-            layerStackGraphics2D.setColor(colors[4]);
-            layerStackGraphics2D.drawRect(5, 0, 1, 1);
-            layerStackGraphics2D.setColor(colors[5]);
-            layerStackGraphics2D.drawRect(6, 0, 1, 1);
-            layerStackGraphics2D.setColor(colors[6]);
-            layerStackGraphics2D.drawRect(7, 0, 1, 1);
-            layerStackGraphics2D.dispose();
-            try {
-                File file = new File(GeneratorUtils.getResourceRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration()), "assets/minecraft/textures/trims/color_palettes/" + modElement.getRegistryName() + ".png");
-                ImageIO.write(palette, ".png", file);
-                FileIO.writeImageToPNGFile(ImageUtils.toBufferedImage(palette), file);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -227,30 +171,21 @@ public class ArmorTrimGUI extends ModElementGUI<ArmorTrim> {
     }
 
     protected AggregatedValidationResult validatePage(int page) {
-        if (type.getSelectedItem().equals("Custom") && materials.getListElements().isEmpty())
-            return new AggregatedValidationResult.FAIL(L10N.label("elementgui.armortrim.needs_materials", new Object[0]).getText());
         return new AggregatedValidationResult(new ValidationGroup[]{this.page1group});
     }
 
     public void openInEditingMode(ArmorTrim trim) {
+        name.setText(trim.name);
         item.setBlock(trim.item);
         armorTextureFile.setSelectedItem(trim.armorTextureFile);
-        type.setSelectedItem(trim.type);
-        materials.setListElements(trim.materials);
-        paletteColor.setColor(trim.paletteColor);
-
-        paletteColor.setEnabled(type.getSelectedItem().equals("Custom"));
-        materials.setEnabled(type.getSelectedItem().equals("Custom"));
         this.updateArmorTexturePreview();
     }
 
     public ArmorTrim getElementFromGUI() {
         ArmorTrim trim = new ArmorTrim(this.modElement);
+        trim.name = name.getText();
         trim.item = item.getBlock();
         trim.armorTextureFile = (String) armorTextureFile.getSelectedItem();
-        trim.type = (String) type.getSelectedItem();
-        trim.materials = materials.getListElements();
-        trim.paletteColor = paletteColor.getColor();
         return trim;
     }
 
