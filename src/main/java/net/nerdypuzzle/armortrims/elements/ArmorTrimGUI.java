@@ -1,53 +1,39 @@
 package net.nerdypuzzle.armortrims.elements;
 
-import net.mcreator.element.ModElementType;
-import net.mcreator.element.parts.MItemBlock;
 import net.mcreator.generator.GeneratorFlavor;
 import net.mcreator.generator.GeneratorUtils;
-import net.mcreator.generator.GeneratorWrapper;
 import net.mcreator.io.FileIO;
 import net.mcreator.minecraft.ElementUtil;
 import net.mcreator.minecraft.MinecraftImageGenerator;
 import net.mcreator.ui.MCreator;
-import net.mcreator.ui.component.JColor;
 import net.mcreator.ui.component.SearchableComboBox;
 import net.mcreator.ui.component.util.ComboBoxUtil;
 import net.mcreator.ui.component.util.ComponentUtils;
 import net.mcreator.ui.component.util.PanelUtils;
 import net.mcreator.ui.help.HelpUtils;
 import net.mcreator.ui.init.L10N;
-import net.mcreator.ui.laf.renderer.WTextureComboBoxRenderer;
 import net.mcreator.ui.minecraft.MCItemHolder;
-import net.mcreator.ui.minecraft.MCItemListField;
 import net.mcreator.ui.modgui.ModElementGUI;
 import net.mcreator.ui.validation.AggregatedValidationResult;
 import net.mcreator.ui.validation.ValidationGroup;
 import net.mcreator.ui.validation.Validator;
 import net.mcreator.ui.validation.component.VComboBox;
 import net.mcreator.ui.validation.component.VTextField;
-import net.mcreator.ui.validation.validators.ItemListFieldValidator;
 import net.mcreator.ui.validation.validators.MCItemHolderValidator;
 import net.mcreator.ui.validation.validators.TextFieldValidator;
-import net.mcreator.ui.views.editor.image.layer.Layer;
 import net.mcreator.ui.workspace.resources.TextureType;
-import net.mcreator.util.FilenameUtilsPatched;
 import net.mcreator.util.ListUtils;
 import net.mcreator.util.image.ImageUtils;
 import net.mcreator.workspace.elements.ModElement;
+import net.nerdypuzzle.armortrims.parts.WTextureComboBoxRenderer;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ArmorTrimGUI extends ModElementGUI<ArmorTrim> {
     private final ValidationGroup page1group = new ValidationGroup();
